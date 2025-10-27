@@ -1,5 +1,8 @@
 package org.example;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.util.concurrent.RateLimiter;
 
@@ -38,17 +41,17 @@ public class CrptApi {
      * @param signature the signature for the request
      * @throws Exception if an error occurs during the request
      */
-    public void createDocument(Document document, String signature) throws Exception {
+    public void createDocument(Document document, String signature, String bearerToken) throws Exception {
         rateLimiter.acquire();
 
         String json = new ObjectMapper().writeValueAsString(document);
 
-        URL url = new URL("https://markirovka.demo.crpt.tech/lk/documents/create");
+        URL url = new URL("https://ismp.crpt.ru/api/v3/lk/documents/create?pg=" + document.getProductGroup());
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 
         connection.setRequestMethod("POST");
         connection.setRequestProperty("Content-Type", "application/json");
-        connection.setRequestProperty("Signature", signature);
+        connection.setRequestProperty("Authorization: Bearer ", bearerToken);
         connection.setDoOutput(true);
 
         try (OutputStream os = connection.getOutputStream()) {
@@ -95,21 +98,64 @@ public class CrptApi {
      * Document model for API requests.
      */
     public static class Document {
-        private String pg;
+        @JsonProperty("document_format")
+        private String documentFormat;
+        @JsonProperty("product_document")
+        private String productDocument;
+        @JsonIgnore
+        private String productGroup;
+        private String signature;
+        private String type;
 
         public Document() {
         }
 
-        public Document(String pg) {
-            this.pg = pg;
+        public Document(String document_format, String product_document, String product_group, String signature, String type) {
+            this.documentFormat = document_format;
+            this.productDocument = product_document;
+            this.productGroup = product_group;
+            this.signature = signature;
+            this.type = type;
+        }
+
+        public String getDocumentFormat() {
+            return documentFormat;
+        }
+
+        public void setDocumentFormat(String documentFormat) {
+            this.documentFormat = documentFormat;
+        }
+
+        public String getProductDocument() {
+            return productDocument;
+        }
+
+        public void setProductDocument(String productDocument) {
+            this.productDocument = productDocument;
         }
 
         public String getProductGroup() {
-            return pg;
+            return productGroup;
         }
 
         public void setProductGroup(String productGroup) {
-            this.pg = productGroup;
+            this.productGroup = productGroup;
+        }
+
+        public String getSignature() {
+            return signature;
+        }
+
+        public void setSignature(String signature) {
+            this.signature = signature;
+        }
+
+        public String getType() {
+            return type;
+        }
+
+        public void setType(String type) {
+            this.type = type;
         }
     }
 }
