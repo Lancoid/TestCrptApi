@@ -21,6 +21,7 @@ import java.util.concurrent.TimeUnit;
 })
 public class CrptApi {
     private final RateLimiter rateLimiter;
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     /**
      * Constructs a CrptApi instance with rate limiting.
@@ -30,7 +31,6 @@ public class CrptApi {
      */
     public CrptApi(TimeUnit timeUnit, int requestLimit) {
         double permitsPerSecond = requestLimit / (double) timeUnit.toSeconds(1);
-
         this.rateLimiter = RateLimiter.create(permitsPerSecond);
     }
 
@@ -42,16 +42,20 @@ public class CrptApi {
      * @throws Exception if an error occurs during the request
      */
     public void createDocument(Document document, String signature, String bearerToken) throws Exception {
+        if (document == null || document.getProductGroup() == null || bearerToken == null) {
+            throw new IllegalArgumentException("Document, productGroup и bearerToken не должны быть null");
+        }
+
         rateLimiter.acquire();
 
-        String json = new ObjectMapper().writeValueAsString(document);
+        String json = objectMapper.writeValueAsString(document);
 
         URL url = new URL("https://ismp.crpt.ru/api/v3/lk/documents/create?pg=" + document.getProductGroup());
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
 
         connection.setRequestMethod("POST");
         connection.setRequestProperty("Content-Type", "application/json");
-        connection.setRequestProperty("Authorization: Bearer ", bearerToken);
+        connection.setRequestProperty("Authorization", "Bearer " + bearerToken);
         connection.setDoOutput(true);
 
         try (OutputStream os = connection.getOutputStream()) {
