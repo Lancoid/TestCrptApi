@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+    ===========================
+    Maven Project Object Model (POM) file
+    This file defines project metadata, dependencies, and build configuration.
+    ===========================
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <!-- Project coordinates and metadata -->
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>org.example</groupId>
+    <artifactId>CrptApi</artifactId>
+    <version>1.0-SNAPSHOT</version>
+    <name>CrptApi</name>
+    <description>Java Maven project for working with CRPT API</description>
+    <url>https://github.com/hotabich_labolape/CrptApi</url>
+
+    <!-- Project properties -->
+    <properties>
+        <maven.compiler.source>25</maven.compiler.source>
+        <maven.compiler.target>25</maven.compiler.target>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+
+    <!-- Project dependencies -->
+    <dependencies>
+        <!-- Jackson Databind for JSON serialization/deserialization -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>2.15.2</version>
+        </dependency>
+        <!-- Guava: Google core libraries for Java -->
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>33.4.8-jre</version>
+        </dependency>
+    </dependencies>
+
+    <!-- Build configuration and plugins -->
+    <build>
+        <!-- Add plugins here if needed -->
+    </build>
+</project>
